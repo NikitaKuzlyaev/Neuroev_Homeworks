@@ -26,6 +26,13 @@ class GeometryFunctions:
     @staticmethod
     def _quant_value(value, v_min, v_max, quants):
         value = MathFunctions.clip(value, v_min, v_max)
+
+        if quants <= 1:
+            return 0
+
+        if value == v_max:
+            return quants - 1
+
         quant_size = v_max - v_min
         value = (value - v_min) / (quant_size / quants)
-        return value
+        return int(value)

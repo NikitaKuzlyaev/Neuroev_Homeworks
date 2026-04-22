@@ -12,12 +12,16 @@ class Pipeline:
 
     def run(self):
 
-        while True:
-            self.epoch()
+        for _ in range(10):
+            self.gym.reset()
+
+            res = self.epoch()
 
 
-    def epoch(self):
+    def epoch(self) -> bool:
 
-        while True:
+        for _ in range(100):
             self.gym.step()
             time.sleep(1)
+
+        return True

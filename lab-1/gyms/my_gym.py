@@ -14,10 +14,10 @@ class MyGym(Gym):
 
     def step(self):
         self.agent.step()
-
         print("step")
 
     def reset(self):
         x, y = AgentSpawner.get_spawn_point(self.context)
+        print(x, y)
         state = State(x=x, y=y, b=0.0, v=0.0)
         self.agent.state = state

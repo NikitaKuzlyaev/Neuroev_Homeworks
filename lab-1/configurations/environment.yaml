@@ -1,12 +1,11 @@
-environment:
-  wind:
-    type: anisotropy
-    direction:
-      x:
-        min: -0.14
-        max: 0.05
-      y:
-        min: -0.07
-        max: 0.12
-    update:
-      rate: 25
+wind:
+  type: anisotropy
+  direction:
+    x:
+      min: -0.14
+      max: 0.05
+    y:
+      min: -0.07
+      max: 0.12
+  update:
+    rate: 25

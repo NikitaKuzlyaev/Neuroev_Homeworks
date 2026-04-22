@@ -1,4 +1,5 @@
 from agents.rational_ql import RationalQleaningAgent
+from bootstraps.action_bootstrap import ActionBootstrap
 from bootstraps.environment_bootstrap import EnvironmentBootstrap
 from bootstraps.geometry_bootstrap import GeometryBootstrap
 from bootstraps.params_bootstrap import ParamsBootstrap
@@ -17,6 +18,7 @@ context.add_bootstrap(EnvironmentBootstrap())
 context.add_bootstrap(RulesBootstrap())
 context.add_bootstrap(GeometryBootstrap())
 context.add_bootstrap(ParamsBootstrap())
+context.add_bootstrap(ActionBootstrap())
 
 app = App(context=context)
 app.run()
@@ -25,8 +27,12 @@ politic = EGreedyPolitic()
 state = State(0, 0, 0, 0)
 
 params: ParamsConfig = context.get("params")
-table = Table(size=params.agent.quants.x * params.agent.quants.y * params.agent.quants.b * params.agent.quants.v)
-agent = RationalQleaningAgent(state=state, politic=politic, table=table)
+table = Table(
+    state_size=params.agent.quants.x * params.agent.quants.y * params.agent.quants.b * params.agent.quants.v,
+    action_size=len(context.get("actions").actions)
+)
+
+agent = RationalQleaningAgent(state=state, context=context, politic=politic, table=table)
 
 gym = MyGym(context=context, agent=agent)
 
