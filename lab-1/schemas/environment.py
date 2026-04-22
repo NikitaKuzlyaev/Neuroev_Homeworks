@@ -21,9 +21,7 @@ class Wind(BaseModel):
     update: Update
 
 
-class Environment(BaseModel):
+class EnvironmentConfig(BaseModel):
     wind: Wind
 
 
-class Config(BaseModel):
-    environment: Environment

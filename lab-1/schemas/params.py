@@ -12,12 +12,18 @@ class SpeedOption(BaseModel):
     value: float
 
 
+class Speed(BaseModel):
+    min_value: float
+    max_value: float
+    options: List[SpeedOption]
+
+
 class Influence(BaseModel):
     wind_x_coef: float
     wind_y_coef: float
 
 
-class Field(BaseModel):
+class Quants(BaseModel):
     x: int
     y: int
     b: int
@@ -31,22 +37,20 @@ class DirectionOption(BaseModel):
 
 
 class Battery(BaseModel):
+    min_value: float
+    max_value: float
     speed_coef: float
     wind_x_coef: float
     wind_y_coef: float
 
 
-class Quants(BaseModel):
-    field: Field
-
-
 class Agent(BaseModel):
-    speed: List[SpeedOption]
+    speed: Speed
     direction: List[DirectionOption]
     influence: Influence
     battery: Battery
     quants: Quants
 
 
-class Config(BaseModel):
+class ParamsConfig(BaseModel):
     agent: Agent

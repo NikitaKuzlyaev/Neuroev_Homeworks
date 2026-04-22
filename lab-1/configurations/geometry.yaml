@@ -13,7 +13,7 @@ spawn:
 
   mean_x: 4.0
   mean_y: 10.0
-  std: 2.0
+  r: 4.0
 
 target:
   x: 23.0

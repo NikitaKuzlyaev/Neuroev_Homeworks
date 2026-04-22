@@ -21,7 +21,6 @@ context.add_bootstrap(ParamsBootstrap())
 app = App(context=context)
 app.run()
 
-gym = MyGym()
 politic = EGreedyPolitic()
 state = State(0, 0, 0, 0)
 

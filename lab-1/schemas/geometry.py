@@ -24,7 +24,7 @@ class Spawn(BaseModel):
     clip: SpawnClip
     mean_x: float
     mean_y: float
-    std: float
+    r: float
 
 
 class Target(BaseModel):
@@ -42,7 +42,7 @@ class RectangleObstacle(BaseModel):
     y_right_up: float
 
 
-class Config(BaseModel):
+class GeometryConfig(BaseModel):
     borders: Borders
     spawn: Spawn
     target: Target

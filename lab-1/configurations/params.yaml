@@ -1,20 +1,23 @@
 agent:
   speed:
-    - type: speed-option
-      id: speed_1
-      value: 0.12
+    min_value: 0
+    max_value: 1
+    options:
+      - type: speed-option
+        id: speed_1
+        value: 0.12
 
-    - type: speed-option
-      id: speed_2
-      value: 0.28
+      - type: speed-option
+        id: speed_2
+        value: 0.28
 
-    - type: speed-option
-      id: speed_3
-      value: 0.45
+      - type: speed-option
+        id: speed_3
+        value: 0.45
 
-    - type: speed-option
-      id: speed_4
-      value: 0.65
+      - type: speed-option
+        id: speed_4
+        value: 0.65
 
   direction:
     - type: direction-option
@@ -38,13 +41,17 @@ agent:
     wind_y_coef: 1.2
 
   battery:
+    min_value: 0
+    max_value: 1
     speed_coef: -0.020
     wind_x_coef: -0.004
     wind_y_coef: -0.003
 
+
+
   quants:
-    field:
-      x: 15
-      y: 15
-      b: 10
-      v: 4
+    x: 15
+    y: 15
+    b: 10
+    v: 4
+

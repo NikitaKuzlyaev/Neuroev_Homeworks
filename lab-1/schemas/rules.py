@@ -40,6 +40,6 @@ class RulesBody(BaseModel):
     award: Award
 
 
-class Config(BaseModel):
+class RulesConfig(BaseModel):
     rules: RulesBody
 
