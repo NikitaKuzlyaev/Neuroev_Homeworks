@@ -16,6 +16,23 @@ agent:
       id: speed_4
       value: 0.65
 
+  direction:
+    - type: direction-option
+      id: direction_1
+      radians: 0.0
+
+    - type: direction-option
+      id: direction_2
+      radians: 1.570796
+
+    - type: direction-option
+      id: direction_3
+      radians: 3.141592
+
+    - type: direction-option
+      id: direction_4
+      radians: 4.712389
+
   influence:
     wind_x_coef: 0.8
     wind_y_coef: 1.2
@@ -24,3 +41,10 @@ agent:
     speed_coef: -0.020
     wind_x_coef: -0.004
     wind_y_coef: -0.003
+
+  quants:
+    field:
+      x: 15
+      y: 15
+      b: 10
+      v: 4
