@@ -1,0 +1,26 @@
+agent:
+  speed:
+    - type: speed-option
+      id: speed_1
+      value: 0.12
+
+    - type: speed-option
+      id: speed_2
+      value: 0.28
+
+    - type: speed-option
+      id: speed_3
+      value: 0.45
+
+    - type: speed-option
+      id: speed_4
+      value: 0.65
+
+  influence:
+    wind_x_coef: 0.8
+    wind_y_coef: 1.2
+
+  battery:
+    speed_coef: -0.020
+    wind_x_coef: -0.004
+    wind_y_coef: -0.003

@@ -1,0 +1,57 @@
+borders:
+  min_x: 0.0
+  max_x: 26.0
+  min_y: 0.0
+  max_y: 14.0
+
+spawn:
+  clip:
+    mix_x: 1.5
+    max_x: 8.0
+    min_y: 4.0
+    max_y: 13.0
+
+  mean_x: 4.0
+  mean_y: 10.0
+  std: 2.0
+
+target:
+  x: 23.0
+  y: 4.5
+  r: 1.0
+
+obstacles:
+  - type: rectangle
+    id: obs_1
+    x_left_down: 9.0
+    y_left_down: 3.0
+    x_right_up: 10.5
+    y_right_up: 8.0
+
+  - type: rectangle
+    id: obs_2
+    x_left_down: 12.0
+    y_left_down: 10.0
+    x_right_up: 14.0
+    y_right_up: 12.5
+
+  - type: rectangle
+    id: obs_3
+    x_left_down: 15.5
+    y_left_down: 2.0
+    x_right_up: 17.5
+    y_right_up: 6.0
+
+  - type: rectangle
+    id: obs_4
+    x_left_down: 18.0
+    y_left_down: 7.5
+    x_right_up: 20.0
+    y_right_up: 11.0
+
+  - type: rectangle
+    id: obs_5
+    x_left_down: 21.0
+    y_left_down: 7.0
+    x_right_up: 22.5
+    y_right_up: 3.5

@@ -1,0 +1,17 @@
+rules:
+  terminal:
+    success:
+      max_abs_difference: 1.0
+      min_b: 0.88
+      max_t: 150
+    fail:
+      max_b: 0.03
+      min_t: 210
+
+  award:
+    success: 100.0
+    fail: -180
+    else:
+      base: -1.2
+      speed_coef: -0.035
+      I_station_coef: 0.0045
