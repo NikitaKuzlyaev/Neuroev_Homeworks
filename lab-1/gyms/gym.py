@@ -10,3 +10,7 @@ class Gym(ABC):
     @abstractmethod
     def reset(self) -> None:
         raise NotImplementedError("")
+
+    @abstractmethod
+    def check_terminal(self) -> bool:
+        raise NotImplementedError

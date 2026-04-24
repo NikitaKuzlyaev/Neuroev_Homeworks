@@ -19,5 +19,9 @@ class Agent(ABC):
         raise NotImplementedError("")
 
     @abstractmethod
+    def reset(self):
+        raise NotImplementedError("")
+
+    @abstractmethod
     def propagate(self):
         raise NotImplementedError("")

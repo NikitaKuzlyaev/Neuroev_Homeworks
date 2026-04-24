@@ -1,7 +1,8 @@
 from agents.agent import Agent
+from agents.common.agent_spawner import AgentSpawner
+from agents.common.geometry import GeometryFunctions
 from bootstraps.key_registry import StorageKey
 from framework.context import Context
-from gyms.common.geometry import GeometryFunctions
 from politics.politic import Politic
 from politics.states.state import State
 from politics.table import Table
@@ -22,11 +23,18 @@ class RationalQleaningAgent(Agent):
     def step(self):
         state_idx = self._map_state_2_state_idx()
 
+
         best_action_idx = self.table.best_action(state_idx=state_idx)
         best_action = self.action_list[best_action_idx]
 
         print("best", best_action_idx)
         print("actions", best_action)
+
+    def reset(self) -> None:
+        x, y = AgentSpawner.get_spawn_point(self.context.get(StorageKey.GEO.value))
+        print(x, y)
+        state = State(x=x, y=y, b=0.0, v=0.0)
+        self.state = state
 
     def propagate(self):
         pass
