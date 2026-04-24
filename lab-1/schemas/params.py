@@ -42,6 +42,7 @@ class Battery(BaseModel):
     speed_coef: float
     wind_x_coef: float
     wind_y_coef: float
+    charge_coef: float
 
 
 class Agent(BaseModel):

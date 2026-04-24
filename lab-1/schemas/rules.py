@@ -42,4 +42,3 @@ class RulesBody(BaseModel):
 
 class RulesConfig(BaseModel):
     rules: RulesBody
-

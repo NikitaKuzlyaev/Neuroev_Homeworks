@@ -46,6 +46,7 @@ agent:
     speed_coef: -0.020
     wind_x_coef: -0.004
     wind_y_coef: -0.003
+    charge_coef: 0.030
 
 
 
