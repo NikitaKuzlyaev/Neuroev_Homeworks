@@ -1,4 +1,5 @@
 import math
+from functools import reduce
 
 from bootstraps.key_registry import StorageKey
 from framework.app import App
@@ -23,7 +24,8 @@ class Pipeline:
 
             print(f"end epoch {epoch_n}")
             epoch_n += 1
-            #print(self.gym.agent.)
+            #if epoch_n % 50 == 0:
+             #   print(sum(reduce(lambda x, y: x + y, self.gym.agent._table.q)))
 
 
     def epoch(self) -> TerminalCondition:
@@ -40,7 +42,7 @@ class Pipeline:
                 time_on_charge_area += 1
 
             if condition != TerminalCondition.NOTHING:
-                print(self.gym.agent.state.x, self.gym.agent.state.y)
+                #print(self.gym.agent.state.x, self.gym.agent.state.y)
                 self.gym.reset()
                 break
 

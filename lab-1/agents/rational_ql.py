@@ -15,10 +15,9 @@ from schemas.params import ParamsConfig
 
 class RationalQleaningAgent(Agent):
 
-    def __init__(self, state: State, context: Context, politic: Politic, table: Table,
-                 gamma: float = 0.99,
+    def __init__(self, state: State, context: Context, politic: Politic, table: Table, gamma: float = 0.99,
                  alpha: float = 0.1):
-        super().__init__(state)
+        super().__init__(state, context, politic, table)
         self.state = state
         self._context = context
         self._politic = politic
@@ -55,7 +54,7 @@ class RationalQleaningAgent(Agent):
 
     def reset(self) -> None:
         x, y = AgentSpawner.get_spawn_point(self._context.get(StorageKey.GEO.value))
-        #print(sum(self._table.q[:][0]))
+        # print(sum(self._table.q[:][0]))
         state = State(x=x, y=y, b=self._params.agent.battery.max_value, v=0.0)
         self.state = state
 
