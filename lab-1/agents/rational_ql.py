@@ -1,4 +1,5 @@
 from agents.agent import Agent
+from bootstraps.key_registry import StorageKey
 from framework.context import Context
 from gyms.common.geometry import GeometryFunctions
 from politics.politic import Politic
@@ -16,7 +17,7 @@ class RationalQleaningAgent(Agent):
         self.politic = politic
         self.table = table
 
-        self.action_list = context.get("actions").actions
+        self.action_list = context.get(StorageKey.ACTION.value).actions
 
     def step(self):
         state_idx = self._map_state_2_state_idx()
@@ -31,8 +32,8 @@ class RationalQleaningAgent(Agent):
         pass
 
     def _map_state_2_state_idx(self) -> int:
-        geometry: GeometryConfig = self.context.get("geo")
-        params: ParamsConfig = self.context.get("params")
+        geometry: GeometryConfig = self.context.get(StorageKey.GEO.value)
+        params: ParamsConfig = self.context.get(StorageKey.PARAMS.value)
 
         qstate = GeometryFunctions.get_quant(
             state=self.state, geometry=geometry, params=params)

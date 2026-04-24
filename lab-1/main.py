@@ -2,6 +2,7 @@ from agents.rational_ql import RationalQleaningAgent
 from bootstraps.action_bootstrap import ActionBootstrap
 from bootstraps.environment_bootstrap import EnvironmentBootstrap
 from bootstraps.geometry_bootstrap import GeometryBootstrap
+from bootstraps.key_registry import StorageKey
 from bootstraps.params_bootstrap import ParamsBootstrap
 from bootstraps.rules_bootstrap import RulesBootstrap
 from framework.app import App
@@ -26,10 +27,10 @@ app.run()
 politic = EGreedyPolitic()
 state = State(0, 0, 0, 0)
 
-params: ParamsConfig = context.get("params")
+params: ParamsConfig = context.get(StorageKey.PARAMS.value)
 table = Table(
     state_size=params.agent.quants.x * params.agent.quants.y * params.agent.quants.b * params.agent.quants.v,
-    action_size=len(context.get("actions").actions)
+    action_size=len(context.get(StorageKey.ACTION.value).actions)
 )
 
 agent = RationalQleaningAgent(state=state, context=context, politic=politic, table=table)

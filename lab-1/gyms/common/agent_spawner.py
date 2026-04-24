@@ -1,7 +1,6 @@
 import math
 from random import random
 
-from framework.context import Context
 from schemas.geometry import GeometryConfig
 from utils.math_funcs import MathFunctions
 
@@ -9,9 +8,7 @@ from utils.math_funcs import MathFunctions
 class AgentSpawner:
 
     @staticmethod
-    def get_spawn_point(context: Context) -> tuple[float, float]:
-        geometry: GeometryConfig = context.get("geo")
-
+    def get_spawn_point(geometry: GeometryConfig) -> tuple[float, float]:
         u = random()
         v = random()
 

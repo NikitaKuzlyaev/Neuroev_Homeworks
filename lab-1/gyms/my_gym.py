@@ -1,4 +1,5 @@
 from agents.agent import Agent
+from bootstraps.key_registry import StorageKey
 from framework.context import Context
 from gyms.common.agent_spawner import AgentSpawner
 from gyms.gym import Gym
@@ -17,7 +18,7 @@ class MyGym(Gym):
         print("step")
 
     def reset(self):
-        x, y = AgentSpawner.get_spawn_point(self.context)
+        x, y = AgentSpawner.get_spawn_point(self.context.get(StorageKey.GEO.value))
         print(x, y)
         state = State(x=x, y=y, b=0.0, v=0.0)
         self.agent.state = state
