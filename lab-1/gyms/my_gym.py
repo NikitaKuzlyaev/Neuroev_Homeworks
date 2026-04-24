@@ -4,15 +4,19 @@ from agents.agent import Agent
 from agents.common.geometry import GeometryFunctions
 from agents.common.wind import WindManager
 from bootstraps.key_registry import StorageKey
+from evaluation.datacollectors.datacollector import datacollector
 from framework.context import Context
 from gyms.gym import Gym, TerminalCondition
+from pipeline import collector
 from politics.states.state import State
+from rules.charge import is_inside_charge_area
 from rules.movement import get_new_xy, get_new_b
 from rules.reward import get_reward
 from schemas.agent import StepResponse
 from schemas.geometry import GeometryConfig
 from schemas.params import ParamsConfig
 from schemas.rules import RulesConfig
+from utils.math_funcs import MathFunctions
 
 
 class MyGym(Gym):
@@ -28,6 +32,10 @@ class MyGym(Gym):
 
         self.reset()
 
+    @datacollector(
+        path="agent.state",
+        callback=collector.collect_state,
+    )
     def step(self) -> TerminalCondition:
         step: StepResponse = self.agent.step()
 
@@ -40,16 +48,28 @@ class MyGym(Gym):
         b = get_new_b(state=state, params=self._params, geometry=self._geometry, wind_manager=self._wind_manager)
 
         real_new_state = State(x=xe, y=ye, b=b, v=step.action.speed.value)
+        if is_inside_charge_area(state=real_new_state, geometry=self._geometry):
+            real_new_state.b = MathFunctions.clip_right(
+                real_new_state.b + self._params.agent.battery.charge_coef, self._params.agent.battery.max_value
+            )
 
-        condition: TerminalCondition = self.check_terminal(state=state)
-        # print(xe, ye, b, step.action.speed.value, step.action.direction.radians, condition)
+        condition: TerminalCondition = self.check_terminal(state=real_new_state)
 
         reward = get_reward(
-            rules=self._rules, params=self._params, geometry=self._geometry, state=state, condition=condition)
-        # print(f"{reward=}")
+            rules=self._rules,
+            params=self._params,
+            geometry=self._geometry,
+            state=real_new_state,
+            condition=condition,
+        )
 
         self.agent.propagate(
-            old_state=state, new_state=real_new_state, action=step.action, reward=reward)
+            old_state=state,
+            new_state=real_new_state,
+            action=step.action,
+            reward=reward,
+            done=condition != TerminalCondition.NOTHING,
+        )
 
         self.agent.state = real_new_state
 

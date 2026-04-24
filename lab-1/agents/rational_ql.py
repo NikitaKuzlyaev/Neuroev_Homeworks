@@ -48,7 +48,11 @@ class RationalQleaningAgent(Agent):
         if done:
             target = reward
         else:
-            target = reward + self._gamma * self._table.best_action(new_state_idx)
+            best_next_action_idx = self._table.best_action(new_state_idx)
+            best_next_q = self._table.get(new_state_idx, best_next_action_idx)
+
+            target = reward + self._gamma * best_next_q
+
         new_value = old_q + self._alpha * (target - old_q)
         self._table.set(old_state_idx, action_idx, new_value)
 

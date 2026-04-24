@@ -21,8 +21,8 @@ class WindManager:
         self.__change_direction()
 
     def __change_direction(self) -> None:
-        wx = self.env.wind.direction.x.min + random() / (self.env.wind.direction.x.max - self.env.wind.direction.x.min)
-        wy = self.env.wind.direction.y.min + random() / (self.env.wind.direction.y.max - self.env.wind.direction.y.min)
+        wx = self.env.wind.direction.x.min + random() * (self.env.wind.direction.x.max - self.env.wind.direction.x.min)
+        wy = self.env.wind.direction.y.min + random() * (self.env.wind.direction.y.max - self.env.wind.direction.y.min)
 
         self.wx = wx * self.params.agent.influence.wind_x_coef
         self.wy = wy * self.params.agent.influence.wind_y_coef

@@ -1,9 +1,12 @@
 import math
-from functools import reduce
 
 from bootstraps.key_registry import StorageKey
+from evaluation.datacollectors.datacollector import PointCollector
+from evaluation.plotters.position_heatmap import plot_heatmap
 from framework.app import App
 from gyms.gym import Gym, TerminalCondition
+
+collector = PointCollector()
 
 
 class Pipeline:
@@ -19,14 +22,24 @@ class Pipeline:
 
             condition: TerminalCondition = self.epoch()
             if condition == TerminalCondition.SUCCESS:
-                print("YAAAAA!!!!")
-                break
+                ...
+                #print("YAAAAA!!!!")
+                #break
 
             print(f"end epoch {epoch_n}")
             epoch_n += 1
-            #if epoch_n % 50 == 0:
-             #   print(sum(reduce(lambda x, y: x + y, self.gym.agent._table.q)))
 
+            if epoch_n % 1000 == 0:
+                plot_heatmap(
+                    points=collector.points,
+                    x_min=0,
+                    x_max=26,
+                    y_min=0,
+                    y_max=14,
+                    bins_x=52,
+                    bins_y=28,
+                )
+                collector.clear()
 
     def epoch(self) -> TerminalCondition:
         time_on_charge_area = 0
@@ -42,9 +55,9 @@ class Pipeline:
                 time_on_charge_area += 1
 
             if condition != TerminalCondition.NOTHING:
-                #print(self.gym.agent.state.x, self.gym.agent.state.y)
+                # print(self.gym.agent.state.x, self.gym.agent.state.y)
                 self.gym.reset()
                 break
 
-        print(time_on_charge_area)
+        #print(time_on_charge_area)
         return condition
