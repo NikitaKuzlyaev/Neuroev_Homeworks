@@ -1,7 +1,8 @@
-import time
+import math
 
+from bootstraps.key_registry import StorageKey
 from framework.app import App
-from gyms.gym import Gym
+from gyms.gym import Gym, TerminalCondition
 
 
 class Pipeline:
@@ -11,17 +12,37 @@ class Pipeline:
         self.gym = gym
 
     def run(self):
-
-        for _ in range(10):
+        epoch_n = 1
+        while True:
             self.gym.reset()
 
-            res = self.epoch()
+            condition: TerminalCondition = self.epoch()
+            if condition == TerminalCondition.SUCCESS:
+                print("YAAAAA!!!!")
+                break
+
+            print(f"end epoch {epoch_n}")
+            epoch_n += 1
+            #print(self.gym.agent.)
 
 
-    def epoch(self) -> bool:
+    def epoch(self) -> TerminalCondition:
+        time_on_charge_area = 0
 
-        for _ in range(100):
-            self.gym.step()
-            time.sleep(1)
+        while True:
+            condition: TerminalCondition = self.gym.step()
+            _geometry = self.app.context.get(StorageKey.GEO.value)
+            I = math.dist(
+                (self.gym.agent.state.x, self.gym.agent.state.y),
+                (_geometry.target.x, _geometry.target.y)
+            ) < _geometry.target.r
+            if I:
+                time_on_charge_area += 1
 
-        return True
+            if condition != TerminalCondition.NOTHING:
+                print(self.gym.agent.state.x, self.gym.agent.state.y)
+                self.gym.reset()
+                break
+
+        print(time_on_charge_area)
+        return condition

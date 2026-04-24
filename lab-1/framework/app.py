@@ -9,3 +9,7 @@ class App:
     def run(self):
         self._context.run_context()
         ...
+
+    @property
+    def context(self):
+        return self._context

@@ -3,48 +3,67 @@ from agents.common.agent_spawner import AgentSpawner
 from agents.common.geometry import GeometryFunctions
 from bootstraps.key_registry import StorageKey
 from framework.context import Context
+from mixins.degradational import Degradational
 from politics.politic import Politic
 from politics.states.state import State
 from politics.table import Table
+from schemas.action import Action
+from schemas.agent import StepResponse
 from schemas.geometry import GeometryConfig
 from schemas.params import ParamsConfig
 
 
 class RationalQleaningAgent(Agent):
 
-    def __init__(self, state: State, context: Context, politic: Politic, table: Table):
+    def __init__(self, state: State, context: Context, politic: Politic, table: Table,
+                 gamma: float = 0.99,
+                 alpha: float = 0.1):
+        super().__init__(state)
         self.state = state
-        self.context = context
-        self.politic = politic
-        self.table = table
+        self._context = context
+        self._politic = politic
+        self._table = table
+        self._gamma = gamma
+        self._alpha = alpha
 
-        self.action_list = context.get(StorageKey.ACTION.value).actions
+        self.action_list: list[Action] = context.get(StorageKey.ACTION.value).actions
+        self._geometry: GeometryConfig = context.get(StorageKey.GEO.value)
+        self._params: ParamsConfig = context.get(StorageKey.PARAMS.value)
 
-    def step(self):
-        state_idx = self._map_state_2_state_idx()
+    def step(self) -> StepResponse:
+        old_state_idx = self._map_state_2_state_idx(state=self.state, geometry=self._geometry, params=self._params)
+        action_idx = self._politic.make_action(
+            table=self._table,
+            state_idx=old_state_idx,
+            n_actions=len(self.action_list) // 4 * 3,
+        )
+        action = self.action_list[action_idx]
+        return StepResponse(action=action, old_state_idx=old_state_idx)
 
+    def propagate(self, old_state: State, new_state: State, action: Action, reward: float, done: bool = False):
+        old_state_idx = self._map_state_2_state_idx(state=old_state, geometry=self._geometry, params=self._params)
+        new_state_idx = self._map_state_2_state_idx(state=new_state, geometry=self._geometry, params=self._params)
 
-        best_action_idx = self.table.best_action(state_idx=state_idx)
-        best_action = self.action_list[best_action_idx]
-
-        print("best", best_action_idx)
-        print("actions", best_action)
+        action_idx = self.action_list.index(action)
+        old_q = self._table.get(old_state_idx, action_idx)
+        if done:
+            target = reward
+        else:
+            target = reward + self._gamma * self._table.best_action(new_state_idx)
+        new_value = old_q + self._alpha * (target - old_q)
+        self._table.set(old_state_idx, action_idx, new_value)
 
     def reset(self) -> None:
-        x, y = AgentSpawner.get_spawn_point(self.context.get(StorageKey.GEO.value))
-        print(x, y)
-        state = State(x=x, y=y, b=0.0, v=0.0)
+        x, y = AgentSpawner.get_spawn_point(self._context.get(StorageKey.GEO.value))
+        #print(sum(self._table.q[:][0]))
+        state = State(x=x, y=y, b=self._params.agent.battery.max_value, v=0.0)
         self.state = state
 
-    def propagate(self):
-        pass
+        if isinstance(self._politic, Degradational):
+            self._politic.degradation()
 
-    def _map_state_2_state_idx(self) -> int:
-        geometry: GeometryConfig = self.context.get(StorageKey.GEO.value)
-        params: ParamsConfig = self.context.get(StorageKey.PARAMS.value)
-
+    def _map_state_2_state_idx(self, state: State, geometry: GeometryConfig, params: ParamsConfig) -> int:
         qstate = GeometryFunctions.get_quant(
-            state=self.state, geometry=geometry, params=params)
-
+            state=state, geometry=geometry, params=params)
         x, y, b, v = params.agent.quants.x, params.agent.quants.y, params.agent.quants.b, params.agent.quants.v
         return ((qstate.v * b + qstate.b) * y + qstate.y) * x + qstate.x

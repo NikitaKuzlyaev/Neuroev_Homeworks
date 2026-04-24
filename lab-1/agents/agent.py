@@ -1,18 +1,14 @@
 from abc import ABC, abstractmethod
 
-from framework.context import Context
-from politics.politic import Politic
 from politics.states.state import State
-from politics.table import Table
+from schemas.action import Action
 
 
 class Agent(ABC):
 
-    def __init__(self, state: State, context: Context, politic: Politic, table: Table):
+    def __init__(self, state: State):
         self.state = state
-        self.context = context
-        self.politic = politic
-        self.table = table
+        ...
 
     @abstractmethod
     def step(self):
@@ -23,5 +19,5 @@ class Agent(ABC):
         raise NotImplementedError("")
 
     @abstractmethod
-    def propagate(self):
+    def propagate(self, old_state: State, new_state: State, action: Action, reward: float, done: bool = False):
         raise NotImplementedError("")

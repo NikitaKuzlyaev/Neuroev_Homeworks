@@ -29,8 +29,8 @@ state = State(0, 0, 0, 0)
 
 params: ParamsConfig = context.get(StorageKey.PARAMS.value)
 table = Table(
-    state_size=params.agent.quants.x * params.agent.quants.y * params.agent.quants.b * params.agent.quants.v,
-    action_size=len(context.get(StorageKey.ACTION.value).actions)
+    n_states=params.agent.quants.x * params.agent.quants.y * params.agent.quants.b * params.agent.quants.v,
+    n_actions=len(context.get(StorageKey.ACTION.value).actions)
 )
 
 agent = RationalQleaningAgent(state=state, context=context, politic=politic, table=table)
