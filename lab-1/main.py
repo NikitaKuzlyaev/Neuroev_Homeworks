@@ -13,7 +13,6 @@ from politics.e_greedy import EGreedyPolitic
 from politics.states.state import State
 from politics.table import Table
 from schemas.params import ParamsConfig
-from utils.json_saving import load_list_from_json
 
 context = Context()
 context.add_bootstrap(EnvironmentBootstrap())
@@ -25,7 +24,6 @@ context.add_bootstrap(ActionBootstrap())
 app = App(context=context)
 app.run()
 
-
 state = State(x=0, y=0, b=0, v=0)
 
 params: ParamsConfig = context.get(StorageKey.PARAMS.value)
@@ -35,15 +33,16 @@ table = Table(
     n_actions=len(context.get(StorageKey.ACTION.value).actions)
 )
 
-table.q = load_list_from_json(file_path="q_table_5k")
-start_epoch = 5000
+# table.q = load_list_from_json(file_path="q_table_5k")
+start_epoch = 1
 
 politic = EGreedyPolitic(
     epsilon=1.0,
     epsilon_min=0.1,
-    fading=pow(0.997, start_epoch),
+    fading=0.997,
 )
-
+for i in range(start_epoch - 1):
+    politic.degradation()
 
 agent = RationalQleaningAgent(
     state=state,

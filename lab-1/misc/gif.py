@@ -11,11 +11,10 @@ def make_gif(
     frames_dir = Path(frames_dir)
     frame_paths = sorted(frames_dir.glob("heatmap_epoch_*.png"))
 
-    images = [imageio.imread(path) for path in frame_paths]
+    if not frame_paths:
+        raise ValueError(f"No frames found in {frames_dir}")
 
-    imageio.mimsave(
-        output_path,
-        images,
-        duration=duration,
-        loop=0,
-    )
+    with imageio.get_writer(output_path, mode="I", duration=duration, loop=0) as writer:
+        for path in frame_paths:
+            image = imageio.imread(path)
+            writer.append_data(image)

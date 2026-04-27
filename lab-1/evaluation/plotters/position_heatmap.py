@@ -15,6 +15,8 @@ def plot_heatmap(
         save_path: str | Path | None = None,
         show: bool = False,
         title: str = "Heatmap посещенных точек",
+        vmin=0,
+        vmax=None,
 ) -> None:
     """
     points: list[tuple[float, float]]
@@ -37,6 +39,8 @@ def plot_heatmap(
         origin="lower",
         extent=[x_min, x_max, y_min, y_max],
         aspect="auto",
+        vmin=vmin,
+        vmax=vmax,
     )
 
     fig.colorbar(image, ax=ax, label="Количество посещений")
