@@ -23,7 +23,7 @@ class Pipeline:
 
     def run(self) -> None:
         """"""
-        epoches = 1000
+        epoches = 5000
 
         for epoch_n in range(1, epoches + 1):
             """"""
@@ -31,15 +31,17 @@ class Pipeline:
 
             self.gym.reset()
             condition: TerminalCondition = self.epoch()
-            print(f"end epoch {epoch_n}")
+
+            if epoch_n % 50 == 0:
+                print(f"end epoch {epoch_n}")
 
             # === end of epoch
 
-            if epoch_n % 1000 == -1:  # todo: its disable
-                self._plot_heatmap()
+            if epoch_n % 100 == 0:  # todo: its disable
+                self._plot_heatmap(epoch=epoch_n)
                 collector.clear()
 
-        save_list_to_json(data=self.gym.agent._table.q, file_path="q_table_15k")
+        save_list_to_json(data=self.gym.agent.table.q, file_path="q_table_15k")
 
     def epoch(self) -> TerminalCondition:
         """"""
@@ -62,10 +64,11 @@ class Pipeline:
 
         return condition
 
-    def _plot_heatmap(self) -> None:
-        """"""
+    def _plot_heatmap(self, epoch: int) -> None:
         plot_heatmap(
             points=collector.points,
             x_min=0, x_max=26, y_min=0, y_max=14,
             bins_x=52, bins_y=28,
+            save_path=f"misc/frames/heatmap_epoch_{epoch:06d}.png",
+            title=f"Heatmap посещенных точек, epoch={epoch}",
         )

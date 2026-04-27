@@ -1,8 +1,21 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_heatmap(points, x_min, x_max, y_min, y_max, bins_x=26 * 5, bins_y=14 * 5) -> None:
+def plot_heatmap(
+        points,
+        x_min,
+        x_max,
+        y_min,
+        y_max,
+        bins_x=26 * 5,
+        bins_y=14 * 5,
+        save_path: str | Path | None = None,
+        show: bool = False,
+        title: str = "Heatmap посещенных точек",
+) -> None:
     """
     points: list[tuple[float, float]]
     """
@@ -14,21 +27,29 @@ def plot_heatmap(points, x_min, x_max, y_min, y_max, bins_x=26 * 5, bins_y=14 * 
         xs,
         ys,
         bins=[bins_x, bins_y],
-        range=[[x_min, x_max], [y_min, y_max]]
+        range=[[x_min, x_max], [y_min, y_max]],
     )
 
-    plt.figure(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(10, 5))
 
-    plt.imshow(
+    image = ax.imshow(
         heatmap.T,
         origin="lower",
         extent=[x_min, x_max, y_min, y_max],
-        aspect="auto"
+        aspect="auto",
     )
 
-    plt.colorbar(label="Количество посещений")
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.title("Heatmap посещенных точек")
+    fig.colorbar(image, ax=ax, label="Количество посещений")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_title(title)
 
-    plt.show()
+    if save_path is not None:
+        save_path = Path(save_path)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(save_path, dpi=120, bbox_inches="tight")
+
+    if show:
+        plt.show()
+
+    plt.close(fig)

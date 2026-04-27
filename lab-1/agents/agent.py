@@ -34,3 +34,7 @@ class Agent(ABC):
     def propagate(self, old_state: State, new_state: State, action: Action, reward: float, done: bool = False) -> None:
         """"""
         raise NotImplementedError("")
+
+    @property
+    def table(self):
+        return self._table

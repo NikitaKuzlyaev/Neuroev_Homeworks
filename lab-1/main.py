@@ -25,11 +25,6 @@ context.add_bootstrap(ActionBootstrap())
 app = App(context=context)
 app.run()
 
-politic = EGreedyPolitic(
-    epsilon=1.0,
-    epsilon_min=0.1,
-    fading=0.999,
-)
 
 state = State(x=0, y=0, b=0, v=0)
 
@@ -40,7 +35,15 @@ table = Table(
     n_actions=len(context.get(StorageKey.ACTION.value).actions)
 )
 
-#table.q = load_list_from_json(file_path="q_table_15k")
+table.q = load_list_from_json(file_path="q_table_5k")
+start_epoch = 5000
+
+politic = EGreedyPolitic(
+    epsilon=1.0,
+    epsilon_min=0.1,
+    fading=pow(0.997, start_epoch),
+)
+
 
 agent = RationalQleaningAgent(
     state=state,
