@@ -1,4 +1,7 @@
-from abc import ABC, abstractmethod
+from abc import (
+    ABC,
+    abstractmethod,
+)
 from enum import Enum
 
 from agents.agent import Agent
@@ -15,17 +18,21 @@ class TerminalCondition(Enum):
 class Gym(ABC):
 
     def __init__(self, context: Context, agent: Agent):
+        """"""
         self.context = context
         self.agent = agent
 
     @abstractmethod
     def step(self) -> TerminalCondition:
+        """"""
         raise NotImplementedError("")
 
     @abstractmethod
     def reset(self) -> None:
+        """"""
         raise NotImplementedError("")
 
     @abstractmethod
     def check_terminal(self, state: State) -> bool:
+        """"""
         raise NotImplementedError

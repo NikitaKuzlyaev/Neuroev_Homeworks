@@ -1,6 +1,9 @@
 from politics.states.quant_state import QuantState
 from politics.states.state import State
-from schemas.geometry import GeometryConfig, RectangleObstacle
+from schemas.geometry import (
+    GeometryConfig,
+    RectangleObstacle,
+)
 from schemas.params import ParamsConfig
 from utils.math_funcs import MathFunctions
 
@@ -9,6 +12,8 @@ class GeometryFunctions:
 
     @staticmethod
     def get_quant(state: State, geometry: GeometryConfig, params: ParamsConfig) -> QuantState:
+        """"""
+
         qx = GeometryFunctions._quant_value(
             state.x, geometry.borders.min_x, geometry.borders.max_x, params.agent.quants.x)
 
@@ -25,12 +30,11 @@ class GeometryFunctions:
 
     @staticmethod
     def get_next_position(
-            x1: float,
-            y1: float,
-            x2: float,
-            y2: float,
-            geometry: GeometryConfig,
+            x1: float, y1: float, x2: float, y2: float,
+            geometry: GeometryConfig
     ) -> tuple[float, float]:
+        """"""
+
         first_t = 1.0
         hit_point = (x2, y2)
 
@@ -55,7 +59,7 @@ class GeometryFunctions:
         x2, y2 = hit_point
         x2 = MathFunctions.clip(x2, geometry.borders.min_x, geometry.borders.max_x)
         y2 = MathFunctions.clip(y2, geometry.borders.min_y, geometry.borders.max_y)
-        #print("first_t", first_t, "hit", x2, y2)
+
         return x2, y2
 
     @staticmethod
@@ -67,6 +71,8 @@ class GeometryFunctions:
             rect: RectangleObstacle,
             eps: float = 1e-3,
     ) -> tuple[float, float, float] | None:
+        """"""
+
         rx_min = rect.x_left_down
         rx_max = rect.x_right_up
         ry_min = rect.y_left_down
@@ -126,7 +132,7 @@ class GeometryFunctions:
         hit_x = x1 + dx * t_min
         hit_y = y1 + dy * t_min
 
-        # Важное: если это только касание границы, а не вход внутрь — не считаем коллизией.
+        # Касание границы не считаем коллизией.
         probe_t = min(1.0, t_min + eps * 10)
         probe_x = x1 + dx * probe_t
         probe_y = y1 + dy * probe_t
@@ -142,7 +148,9 @@ class GeometryFunctions:
         return max(0.0, t_min), hit_x, hit_y
 
     @staticmethod
-    def _quant_value(value, v_min, v_max, quants):
+    def _quant_value(value, v_min, v_max, quants) -> int:
+        """"""
+
         value = MathFunctions.clip(value, v_min, v_max)
 
         if quants <= 1:

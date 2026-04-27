@@ -23,5 +23,3 @@ class Wind(BaseModel):
 
 class EnvironmentConfig(BaseModel):
     wind: Wind
-
-

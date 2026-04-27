@@ -9,6 +9,7 @@ from schemas.params import ParamsConfig
 class WindManager:
 
     def __init__(self, context: Context, rate: int = 25):
+        """"""
         self.context = context
         self.wx = 0
         self.wy = 0
@@ -21,19 +22,22 @@ class WindManager:
         self.__change_direction()
 
     def __change_direction(self) -> None:
+        """"""
         wx = self.env.wind.direction.x.min + random() * (self.env.wind.direction.x.max - self.env.wind.direction.x.min)
         wy = self.env.wind.direction.y.min + random() * (self.env.wind.direction.y.max - self.env.wind.direction.y.min)
 
         self.wx = wx * self.params.agent.influence.wind_x_coef
         self.wy = wy * self.params.agent.influence.wind_y_coef
 
-    def update(self):
+    def update(self) -> None:
+        """"""
         self.__to_change_direction -= 1
 
         if self.__to_change_direction == 0:
             self.__to_change_direction = self._rate
             self.__change_direction()
 
-    def reset(self):
+    def reset(self) -> None:
+        """"""
         self.__to_change_direction = self._rate
         self.__change_direction()

@@ -10,6 +10,7 @@ from utils.yaml_reader import YAMLReader
 class RulesBootstrap(SchemaBootstrap):
 
     @context_storage(StorageKey.RULES.value)
-    def awake(self):
+    def awake(self) -> RulesConfig:
+        """"""
         data = YAMLReader.yaml_2_map(path=self.__class__.resource_path)
         return RulesConfig(**data)

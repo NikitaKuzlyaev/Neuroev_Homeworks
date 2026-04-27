@@ -32,4 +32,5 @@ def get_new_b(
 
     b = min(1.0,
             state.b + speed_coef * state.v ** 2 + wind_x_coef * abs(wx) + wind_y_coef * abs(wy) + _I * charge_coef)
+
     return b

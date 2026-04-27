@@ -9,6 +9,8 @@ class AgentSpawner:
 
     @staticmethod
     def get_spawn_point(geometry: GeometryConfig) -> tuple[float, float]:
+        """"""
+
         u = random()
         v = random()
 
@@ -18,7 +20,6 @@ class AgentSpawner:
         x = geometry.spawn.mean_x + r * math.cos(theta)
         y = geometry.spawn.mean_y + r * math.sin(theta)
 
-        # clipping
         x_left, x_right = geometry.spawn.clip.min_x, geometry.spawn.clip.max_x
         y_left, y_right = geometry.spawn.clip.min_y, geometry.spawn.clip.max_y
 

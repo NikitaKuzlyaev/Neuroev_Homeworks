@@ -10,6 +10,7 @@ from utils.yaml_reader import YAMLReader
 class ParamsBootstrap(SchemaBootstrap):
 
     @context_storage(StorageKey.PARAMS.value)
-    def awake(self):
+    def awake(self) -> ParamsConfig:
+        """"""
         data = YAMLReader.yaml_2_map(path=self.__class__.resource_path)
         return ParamsConfig(**data)

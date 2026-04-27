@@ -1,4 +1,5 @@
 class Degradational:
 
-    def degradation(self):
+    def degradation(self) -> None:
+        """"""
         raise NotImplementedError("")

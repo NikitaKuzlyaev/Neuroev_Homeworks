@@ -2,7 +2,10 @@ from typing import List
 
 from pydantic import BaseModel
 
-from schemas.params import SpeedOption, DirectionOption
+from schemas.params import (
+    SpeedOption,
+    DirectionOption,
+)
 
 
 class Action(BaseModel):

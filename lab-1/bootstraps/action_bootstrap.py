@@ -2,8 +2,14 @@ from bootstraps.key_registry import StorageKey
 from bootstraps.schemas import SchemaBootstrap
 from framework.bootstraps.decs.bootstrap_resource import bootstrap_resource
 from framework.bootstraps.decs.context_storage import context_storage
-from schemas.action import Action, Actions
-from schemas.params import SpeedOption, DirectionOption
+from schemas.action import (
+    Action,
+    Actions,
+)
+from schemas.params import (
+    SpeedOption,
+    DirectionOption,
+)
 from utils.yaml_reader import YAMLReader
 
 
@@ -11,7 +17,8 @@ from utils.yaml_reader import YAMLReader
 class ActionBootstrap(SchemaBootstrap):
 
     @context_storage(StorageKey.ACTION.value)
-    def awake(self):
+    def awake(self) -> Actions:
+        """"""
         data = YAMLReader.yaml_2_map(path=self.__class__.resource_path)
 
         speed_list = data["agent"]["speed"]["options"]  # фуу блин

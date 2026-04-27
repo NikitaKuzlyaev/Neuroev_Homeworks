@@ -24,8 +24,13 @@ context.add_bootstrap(ActionBootstrap())
 app = App(context=context)
 app.run()
 
-politic = EGreedyPolitic(epsilon=1.0, epsilon_min=0.1, fading=0.999)
-state = State(0, 0, 0, 0)
+politic = EGreedyPolitic(
+    epsilon=1.0,
+    epsilon_min=0.1,
+    fading=0.999,
+)
+
+state = State(x=0, y=0, b=0, v=0)
 
 params: ParamsConfig = context.get(StorageKey.PARAMS.value)
 table = Table(
@@ -33,9 +38,19 @@ table = Table(
     n_actions=len(context.get(StorageKey.ACTION.value).actions)
 )
 
-agent = RationalQleaningAgent(state=state, context=context, politic=politic, table=table, alpha=1.0, gamma=0.99)
+agent = RationalQleaningAgent(
+    state=state,
+    context=context,
+    politic=politic,
+    table=table,
+    alpha=1.0,
+    gamma=0.99,
+)
 
-gym = MyGym(context=context, agent=agent)
+gym = MyGym(
+    context=context,
+    agent=agent,
+)
 
 pipeline = Pipeline(app=app, gym=gym)
 pipeline.run()

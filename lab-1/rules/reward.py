@@ -3,7 +3,10 @@ from politics.states.state import State
 from rules.charge import is_inside_charge_area
 from schemas.geometry import GeometryConfig
 from schemas.params import ParamsConfig
-from schemas.rules import ElseAward, RulesConfig
+from schemas.rules import (
+    ElseAward,
+    RulesConfig,
+)
 
 
 def get_reward(

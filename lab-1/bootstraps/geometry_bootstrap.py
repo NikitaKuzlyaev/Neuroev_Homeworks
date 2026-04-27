@@ -10,6 +10,7 @@ from utils.yaml_reader import YAMLReader
 class GeometryBootstrap(SchemaBootstrap):
 
     @context_storage(StorageKey.GEO.value)
-    def awake(self):
+    def awake(self) -> GeometryConfig:
+        """"""
         data = YAMLReader.yaml_2_map(path=self.__class__.resource_path)
         return GeometryConfig(**data)

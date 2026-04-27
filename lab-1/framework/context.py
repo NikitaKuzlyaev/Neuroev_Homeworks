@@ -1,3 +1,5 @@
+from typing import Any
+
 from framework.bootstraps.bootstrap import Bootstrap
 
 
@@ -19,22 +21,24 @@ class Context:
     _storage = {}
 
     @classmethod
-    def add(cls, key, value):
+    def add(cls, key, value) -> None:
+        """"""
         cls._storage[key] = value
 
     @classmethod
-    def get(cls, key):
+    def get(cls, key) -> Any:
+        """"""
         return cls._storage[key]
 
     @classmethod
     @Utils.mutable_op
-    def add_bootstrap(cls, bootstrap: Bootstrap):
-        print("add_bootstrap")
+    def add_bootstrap(cls, bootstrap: Bootstrap) -> None:
+        """"""
         cls._bootstraps.append(bootstrap)
 
     @classmethod
-    def run_context(cls):
-        print("run_context")
+    def run_context(cls) -> None:
+        """"""
         cls._mutable_lock = False
         for bootstrap in cls._bootstraps:
             bootstrap.awake()

@@ -4,7 +4,10 @@ from bootstraps.key_registry import StorageKey
 from evaluation.datacollectors.datacollector import PointCollector
 from evaluation.plotters.position_heatmap import plot_heatmap
 from framework.app import App
-from gyms.gym import Gym, TerminalCondition
+from gyms.gym import (
+    Gym,
+    TerminalCondition,
+)
 
 collector = PointCollector()
 
@@ -12,21 +15,20 @@ collector = PointCollector()
 class Pipeline:
 
     def __init__(self, app: App, gym: Gym):
+        """"""
         self.app = app
         self.gym = gym
 
-    def run(self):
+    def run(self) -> None:
+        """"""
+
         epoch_n = 1
         while True:
             self.gym.reset()
 
             condition: TerminalCondition = self.epoch()
-            if condition == TerminalCondition.SUCCESS:
-                ...
-                #print("YAAAAA!!!!")
-                #break
-
             print(f"end epoch {epoch_n}")
+
             epoch_n += 1
 
             if epoch_n % 1000 == 0:
@@ -42,6 +44,7 @@ class Pipeline:
                 collector.clear()
 
     def epoch(self) -> TerminalCondition:
+        """"""
         time_on_charge_area = 0
 
         while True:
@@ -55,9 +58,7 @@ class Pipeline:
                 time_on_charge_area += 1
 
             if condition != TerminalCondition.NOTHING:
-                # print(self.gym.agent.state.x, self.gym.agent.state.y)
                 self.gym.reset()
                 break
 
-        #print(time_on_charge_area)
         return condition

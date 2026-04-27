@@ -10,6 +10,7 @@ from utils.yaml_reader import YAMLReader
 class EnvironmentBootstrap(SchemaBootstrap):
 
     @context_storage(StorageKey.ENV.value)
-    def awake(self):
+    def awake(self) -> EnvironmentConfig:
+        """"""
         data = YAMLReader.yaml_2_map(path=self.__class__.resource_path)
         return EnvironmentConfig(**data)
