@@ -8,6 +8,7 @@ from gyms.gym import (
     Gym,
     TerminalCondition,
 )
+from utils.json_saving import save_list_to_json
 
 collector = PointCollector()
 
@@ -18,30 +19,27 @@ class Pipeline:
         """"""
         self.app = app
         self.gym = gym
+        self._geometry = self.app.context.get(StorageKey.GEO.value)
 
     def run(self) -> None:
         """"""
+        epoches = 1000
 
-        epoch_n = 1
-        while True:
+        for epoch_n in range(1, epoches + 1):
+            """"""
+            # === start of epoch
+
             self.gym.reset()
-
             condition: TerminalCondition = self.epoch()
             print(f"end epoch {epoch_n}")
 
-            epoch_n += 1
+            # === end of epoch
 
-            if epoch_n % 1000 == 0:
-                plot_heatmap(
-                    points=collector.points,
-                    x_min=0,
-                    x_max=26,
-                    y_min=0,
-                    y_max=14,
-                    bins_x=52,
-                    bins_y=28,
-                )
+            if epoch_n % 1000 == -1:  # todo: its disable
+                self._plot_heatmap()
                 collector.clear()
+
+        save_list_to_json(data=self.gym.agent._table.q, file_path="q_table_15k")
 
     def epoch(self) -> TerminalCondition:
         """"""
@@ -49,11 +47,12 @@ class Pipeline:
 
         while True:
             condition: TerminalCondition = self.gym.step()
-            _geometry = self.app.context.get(StorageKey.GEO.value)
+
             I = math.dist(
                 (self.gym.agent.state.x, self.gym.agent.state.y),
-                (_geometry.target.x, _geometry.target.y)
-            ) < _geometry.target.r
+                (self._geometry.target.x, self._geometry.target.y)
+            ) < self._geometry.target.r
+
             if I:
                 time_on_charge_area += 1
 
@@ -62,3 +61,11 @@ class Pipeline:
                 break
 
         return condition
+
+    def _plot_heatmap(self) -> None:
+        """"""
+        plot_heatmap(
+            points=collector.points,
+            x_min=0, x_max=26, y_min=0, y_max=14,
+            bins_x=52, bins_y=28,
+        )

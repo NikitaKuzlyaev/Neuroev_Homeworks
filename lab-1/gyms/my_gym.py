@@ -48,33 +48,21 @@ class MyGym(Gym):
         step: StepResponse = self.agent.step()
         state: State = self.agent.state
 
-        real_new_state = self._get_new_agent_state(
+        new_state = self._get_new_agent_state(
             step=step, state=state, params=self._params, geometry=self._geometry, wind_manager=self._wind_manager
         )
+        self.agent.state = new_state
 
-        if is_inside_charge_area(state=real_new_state, geometry=self._geometry):
-            real_new_state.b = MathFunctions.clip_right(
-                real_new_state.b + self._params.agent.battery.charge_coef, self._params.agent.battery.max_value
-            )
-
-        condition: TerminalCondition = self.check_terminal(state=real_new_state)
+        condition: TerminalCondition = self.check_terminal(state=new_state)
 
         reward = get_reward(
-            rules=self._rules,
-            params=self._params,
-            geometry=self._geometry,
-            state=real_new_state,
-            condition=condition,
+            rules=self._rules, params=self._params, geometry=self._geometry, state=new_state, condition=condition,
         )
 
         self.agent.propagate(
-            old_state=state,
-            new_state=real_new_state,
-            action=step.action,
-            reward=reward,
+            old_state=state, new_state=new_state, action=step.action, reward=reward,
             done=condition != TerminalCondition.NOTHING,
         )
-        self.agent.state = real_new_state
 
         self._wind_manager.update()
 
@@ -101,7 +89,23 @@ class MyGym(Gym):
 
         return TerminalCondition.NOTHING
 
-    def _get_next_agent_position(self, state: State, step: StepResponse) -> tuple[float, float]:
+    def _get_new_agent_state(
+            self, step: StepResponse, state: State, params: ParamsConfig, geometry: GeometryConfig,
+            wind_manager: WindManager
+    ) -> State:
+        """"""
+        xe, ye = self._get_next_agent_position(state=state, step=step)
+
+        b = get_new_b(
+            state=state, params=self._params, geometry=self._geometry, wind_manager=self._wind_manager
+        )
+        state = State(x=xe, y=ye, b=b, v=step.action.speed.value)
+        self._update_agent_battery(state=state, geometry=self._geometry, params=self._params)
+        return state
+
+    def _get_next_agent_position(
+            self, state: State, step: StepResponse
+    ) -> tuple[float, float]:
         """"""
         xn, yn = get_new_xy(
             state=state, action=step.action, wind_manager=self._wind_manager
@@ -111,14 +115,12 @@ class MyGym(Gym):
         )
         return xe, ye
 
-    def _get_new_agent_state(
-            self, step: StepResponse, state: State, params: ParamsConfig, geometry: GeometryConfig,
-            wind_manager: WindManager
-    ):
-        xe, ye = self._get_next_agent_position(state=state, step=step)
-
-        b = get_new_b(
-            state=state, params=self._params, geometry=self._geometry, wind_manager=self._wind_manager
-        )
-        state = State(x=xe, y=ye, b=b, v=step.action.speed.value)
-        return state
+    def _update_agent_battery(
+            self, state: State, geometry: GeometryConfig, params: ParamsConfig,
+    ) -> None:
+        """"""
+        if is_inside_charge_area(state=state, geometry=geometry):
+            state.b = MathFunctions.clip_right(
+                state.b + params.agent.battery.charge_coef, params.agent.battery.max_value
+            )
+        return
