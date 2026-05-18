@@ -8,9 +8,8 @@ from evaluation.datacollectors.datacollector import datacollector
 from framework.context import Context
 from gyms.gym import (
     Gym,
-    TerminalCondition,
+    TerminalCondition, TerminalResult,
 )
-from pipeline import collector
 from politics.states.state import State
 from rules.charge import is_inside_charge_area
 from rules.movement import (
@@ -43,7 +42,7 @@ class MyGym(Gym):
         path="agent.state",
         callback=collector.collect_state,
     )
-    def step(self) -> TerminalCondition:
+    def step(self, validate, tick) -> TerminalResult:
         """"""
         step: StepResponse = self.agent.step()
         state: State = self.agent.state
@@ -66,7 +65,7 @@ class MyGym(Gym):
 
         self._wind_manager.update()
 
-        return condition
+        return TerminalResult(condition=condition, metrics={"collisions": int(1.0 - hit_t > 0.001)})
 
     def reset(self) -> None:
         """"""
