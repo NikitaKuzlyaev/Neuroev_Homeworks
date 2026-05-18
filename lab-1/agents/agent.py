@@ -13,7 +13,9 @@ from schemas.agent import StepResponse
 
 class Agent(ABC):
 
-    def __init__(self, state: State, context: Context, politic: Politic, table: Table):
+    def __init__(
+            self, state: State, context: Context, politic: Politic, table: Table
+    ):
         """"""
         self.state = state
         self._context = context
@@ -31,7 +33,9 @@ class Agent(ABC):
         raise NotImplementedError("")
 
     @abstractmethod
-    def propagate(self, old_state: State, new_state: State, action: Action, reward: float, done: bool = False) -> None:
+    def propagate(
+            self, old_state: State, new_state: State, action: Action, reward: float, done: bool = False
+    ) -> None:
         """"""
         raise NotImplementedError("")
 

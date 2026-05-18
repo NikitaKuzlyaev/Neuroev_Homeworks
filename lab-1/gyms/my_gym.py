@@ -8,9 +8,8 @@ from evaluation.datacollectors.datacollector import datacollector
 from framework.context import Context
 from gyms.gym import (
     Gym,
-    TerminalCondition,
+    TerminalCondition, TerminalResult,
 )
-from pipeline import collector
 from politics.states.state import State
 from rules.charge import is_inside_charge_area
 from rules.movement import (
@@ -22,6 +21,7 @@ from schemas.agent import StepResponse
 from schemas.geometry import GeometryConfig
 from schemas.params import ParamsConfig
 from schemas.rules import RulesConfig
+from training_pipeline import collector
 from utils.math_funcs import MathFunctions
 
 
@@ -43,30 +43,31 @@ class MyGym(Gym):
         path="agent.state",
         callback=collector.collect_state,
     )
-    def step(self) -> TerminalCondition:
+    def step(self, validate, tick) -> TerminalResult:
         """"""
         step: StepResponse = self.agent.step()
         state: State = self.agent.state
 
-        new_state = self._get_new_agent_state(
+        new_state, hit_t = self._get_new_agent_state(
             step=step, state=state, params=self._params, geometry=self._geometry, wind_manager=self._wind_manager
         )
         self.agent.state = new_state
 
-        condition: TerminalCondition = self.check_terminal(state=new_state)
+        condition: TerminalCondition = self.check_terminal(state=new_state, tick=tick)
 
-        reward = get_reward(
-            rules=self._rules, params=self._params, geometry=self._geometry, state=new_state, condition=condition,
-        )
+        if not validate:
+            reward = get_reward(
+                rules=self._rules, params=self._params, geometry=self._geometry, state=new_state, condition=condition,
+            )
 
-        self.agent.propagate(
-            old_state=state, new_state=new_state, action=step.action, reward=reward,
-            done=condition != TerminalCondition.NOTHING,
-        )
+            self.agent.propagate(
+                old_state=state, new_state=new_state, action=step.action, reward=reward,
+                done=condition != TerminalCondition.NOTHING,
+            )
 
         self._wind_manager.update()
 
-        return condition
+        return TerminalResult(condition=condition, metrics={"collisions": int(1.0 - hit_t > 0.001)})
 
     def reset(self) -> None:
         """"""
@@ -92,28 +93,28 @@ class MyGym(Gym):
     def _get_new_agent_state(
             self, step: StepResponse, state: State, params: ParamsConfig, geometry: GeometryConfig,
             wind_manager: WindManager
-    ) -> State:
+    ) -> tuple[State, float]:
         """"""
-        xe, ye = self._get_next_agent_position(state=state, step=step)
+        xe, ye, hit_t = self._get_next_agent_position(state=state, step=step)
 
         b = get_new_b(
             state=state, params=self._params, geometry=self._geometry, wind_manager=self._wind_manager
         )
         state = State(x=xe, y=ye, b=b, v=step.action.speed.value)
         self._update_agent_battery(state=state, geometry=self._geometry, params=self._params)
-        return state
+        return state, hit_t
 
     def _get_next_agent_position(
             self, state: State, step: StepResponse
-    ) -> tuple[float, float]:
+    ) -> tuple[float, float, float]:
         """"""
         xn, yn = get_new_xy(
             state=state, action=step.action, wind_manager=self._wind_manager
         )
-        xe, ye = GeometryFunctions.get_next_position(
+        xe, ye, hit_t = GeometryFunctions.get_next_position(
             x1=state.x, y1=state.y, x2=xn, y2=yn, geometry=self._geometry
         )
-        return xe, ye
+        return xe, ye, hit_t
 
     def _update_agent_battery(
             self, state: State, geometry: GeometryConfig, params: ParamsConfig,

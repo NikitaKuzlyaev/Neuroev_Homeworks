@@ -1,8 +1,12 @@
+from __future__ import annotations
+
 from abc import (
     ABC,
     abstractmethod,
 )
+from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 from agents.agent import Agent
 from framework.context import Context
@@ -15,6 +19,12 @@ class TerminalCondition(Enum):
     NOTHING = "NOTHING"
 
 
+@dataclass
+class TerminalResult:
+    condition: TerminalCondition
+    metrics: dict[str, Any] = field(default_factory=dict)
+
+
 class Gym(ABC):
 
     def __init__(self, context: Context, agent: Agent):
@@ -23,7 +33,7 @@ class Gym(ABC):
         self.agent = agent
 
     @abstractmethod
-    def step(self) -> TerminalCondition:
+    def step(self, validate: bool = False, tick: int = 0) -> TerminalResult:
         """"""
         raise NotImplementedError("")
 

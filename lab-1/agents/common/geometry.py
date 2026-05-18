@@ -32,7 +32,7 @@ class GeometryFunctions:
     def get_next_position(
             x1: float, y1: float, x2: float, y2: float,
             geometry: GeometryConfig
-    ) -> tuple[float, float]:
+    ) -> tuple[float, float, float]:
         """"""
 
         first_t = 1.0
@@ -60,7 +60,7 @@ class GeometryFunctions:
         x2 = MathFunctions.clip(x2, geometry.borders.min_x, geometry.borders.max_x)
         y2 = MathFunctions.clip(y2, geometry.borders.min_y, geometry.borders.max_y)
 
-        return x2, y2
+        return x2, y2, first_t
 
     @staticmethod
     def _segment_rectangle_collision(
