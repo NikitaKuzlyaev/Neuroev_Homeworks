@@ -26,5 +26,7 @@ class LastNWinrateCounter:
 
     def winrate(self) -> float:
         """"""
-        wr = self._wins / self._n
-        return wr
+        if len(self._last) == 0:
+            return 0.0
+
+        return self._wins / len(self._last)

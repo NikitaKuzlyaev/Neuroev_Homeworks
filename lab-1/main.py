@@ -11,7 +11,7 @@ from politics.states.state import State
 from politics.table import Table
 from schemas.params import ParamsConfig
 from training_pipeline import TrainingPipeline
-from utils.agents import create_ql_prospect
+from utils.agents import create_ql_prospect, create_ql_greedy
 from utils.json_saving import load_list_from_json
 from validate_pipeline import ValidatePipeline
 
@@ -37,24 +37,23 @@ table = Table(
 # ======================  TRAIN  ========================================
 
 
-
-# agent1 = create_ql_greedy(state=state, context=context, table=table)
-agent2 = create_ql_prospect(state=state, context=context, table=table)
+agent1 = create_ql_greedy(state=state, context=context, table=table)
+# agent2 = create_ql_prospect(state=state, context=context, table=table)
 # agent3 = create_risk_sensitive(state=state, context=context, table=table)
 
 gym = MyGym(
     context=context,
-    agent=agent2,
+    agent=agent1,
 )
 
-# training = TrainingPipeline(app=app, gym=gym)
-# training.run()
+training = TrainingPipeline(app=app, gym=gym)
+training.run()
 
 
 # ======================  VALIDATE  ========================================
 
 # start_epoch = 15000
-table.q = load_list_from_json(file_path="misc/tables/agent2/qq_table_45000")
+#table.q = load_list_from_json(file_path="misc/tables/agent2/qq_table_45000")
 # # agent1 = create_ql_greedy(state=state, context=context, table=table, start_epoch=start_epoch)
 # agent2 = create_ql_prospect(state=state, context=context, table=table)
 # # agent3 = create_risk_sensitive(state=state, context=context, table=table)
@@ -64,7 +63,7 @@ table.q = load_list_from_json(file_path="misc/tables/agent2/qq_table_45000")
 #     agent=agent2,
 # )
 #
-validate = ValidatePipeline(app=app, gym=gym)
-validate.run()
+# validate = ValidatePipeline(app=app, gym=gym)
+# validate.run()
 
 print("Hello")

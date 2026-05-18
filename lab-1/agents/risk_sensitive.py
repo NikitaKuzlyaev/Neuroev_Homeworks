@@ -4,6 +4,7 @@ from agents.agent import Agent
 from agents.common.agent_spawner import AgentSpawner
 from bootstraps.key_registry import StorageKey
 from framework.context import Context
+from mixins.degradational import Degradational
 from politics.politic import Politic
 from politics.states.state import State
 from politics.table import Table
@@ -18,7 +19,7 @@ class RiskSensitiveQleaningAgent(Agent):
 
     def __init__(
             self, state: State, context: Context, politic: Politic, table: Table,
-            gamma: float = 0.99, learning_rate: float = 0.9, eta: float = 2.0, eta_eps: float = 1e-8,
+            gamma: float = 0.99, learning_rate: float = 1.0, eta: float = 2.0, eta_eps: float = 1e-8,
     ):
         """"""
         super().__init__(state, context, politic, table)
@@ -96,6 +97,9 @@ class RiskSensitiveQleaningAgent(Agent):
             x=x, y=y, b=self._params.agent.battery.max_value, v=0.0,
         )
         self.state = state
+
+        if isinstance(self._politic, Degradational):
+            self._politic.degradation()
 
     def _propagate_risk_neutral(
             self, old_state_idx: int, new_state_idx: int, action_idx: int, old_q: float, reward: float,

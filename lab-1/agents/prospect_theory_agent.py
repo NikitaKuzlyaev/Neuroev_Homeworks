@@ -2,6 +2,7 @@ from agents.agent import Agent
 from agents.common.agent_spawner import AgentSpawner
 from bootstraps.key_registry import StorageKey
 from framework.context import Context
+from mixins.degradational import Degradational
 from politics.politic import Politic
 from politics.states.state import State
 from politics.table import Table
@@ -16,7 +17,7 @@ class ProspectTheoryQleaningAgent(Agent):
 
     def __init__(
             self, state: State, context: Context, politic: Politic, table: Table, gamma: float = 0.99,
-            lr: float = 0.9, alpha: float = 0.88, beta: float = 0.88, lambda_: float = 2.35
+            lr: float = 1.0, alpha: float = 0.88, beta: float = 0.88, lambda_: float = 2.35
     ):
         """"""
         super().__init__(state, context, politic, table)
@@ -86,3 +87,6 @@ class ProspectTheoryQleaningAgent(Agent):
             x=x, y=y, b=self._params.agent.battery.max_value, v=0.0,
         )
         self.state = state
+
+        if isinstance(self._politic, Degradational):
+            self._politic.degradation()
