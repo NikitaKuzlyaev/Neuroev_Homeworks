@@ -1,4 +1,3 @@
-from agents.rational_ql import RationalQleaningAgent
 from bootstraps.action_bootstrap import ActionBootstrap
 from bootstraps.environment_bootstrap import EnvironmentBootstrap
 from bootstraps.geometry_bootstrap import GeometryBootstrap
@@ -8,12 +7,13 @@ from bootstraps.rules_bootstrap import RulesBootstrap
 from framework.app import App
 from framework.context import Context
 from gyms.my_gym import MyGym
-from pipeline import Pipeline
-from politics.e_greedy import EGreedyPolitic
 from politics.states.state import State
 from politics.table import Table
 from schemas.params import ParamsConfig
+from training_pipeline import TrainingPipeline
 from utils.agents import create_ql_prospect
+from utils.json_saving import load_list_from_json
+from validate_pipeline import ValidatePipeline
 
 context = Context()
 context.add_bootstrap(EnvironmentBootstrap())
@@ -34,25 +34,9 @@ table = Table(
     n_actions=len(context.get(StorageKey.ACTION.value).actions)
 )
 
-# table.q = load_list_from_json(file_path="q_table_5k")
-start_epoch = 1
+# ======================  TRAIN  ========================================
 
-politic = EGreedyPolitic(
-    epsilon=1.0,
-    epsilon_min=0.1,
-    fading=0.997,
-)
-for i in range(start_epoch - 1):
-    politic.degradation()
 
-agent = RationalQleaningAgent(
-    state=state,
-    context=context,
-    politic=politic,
-    table=table,
-    alpha=1.0,
-    gamma=0.99,
-)
 
 # agent1 = create_ql_greedy(state=state, context=context, table=table)
 agent2 = create_ql_prospect(state=state, context=context, table=table)
@@ -63,7 +47,24 @@ gym = MyGym(
     agent=agent2,
 )
 
-pipeline = Pipeline(app=app, gym=gym)
-pipeline.run()
+# training = TrainingPipeline(app=app, gym=gym)
+# training.run()
+
+
+# ======================  VALIDATE  ========================================
+
+# start_epoch = 15000
+table.q = load_list_from_json(file_path="misc/tables/agent2/qq_table_45000")
+# # agent1 = create_ql_greedy(state=state, context=context, table=table, start_epoch=start_epoch)
+# agent2 = create_ql_prospect(state=state, context=context, table=table)
+# # agent3 = create_risk_sensitive(state=state, context=context, table=table)
+#
+# gym = MyGym(
+#     context=context,
+#     agent=agent2,
+# )
+#
+validate = ValidatePipeline(app=app, gym=gym)
+validate.run()
 
 print("Hello")
