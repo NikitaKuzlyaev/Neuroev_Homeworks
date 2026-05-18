@@ -10,6 +10,7 @@ from gyms.gym import (
     Gym,
     TerminalCondition,
 )
+from mixins.runnable import Runnable
 from utils.json_saving import save_list_to_json
 
 collector = PointCollector()
@@ -17,7 +18,7 @@ winrate_counter = LastNWinrateCounter(n=250)
 winrates = []
 
 
-class Pipeline:
+class TrainingPipeline(Runnable):
 
     def __init__(self, app: App, gym: Gym):
         """"""
