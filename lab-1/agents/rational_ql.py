@@ -1,6 +1,5 @@
 from agents.agent import Agent
 from agents.common.agent_spawner import AgentSpawner
-from agents.common.geometry import GeometryFunctions
 from bootstraps.key_registry import StorageKey
 from framework.context import Context
 from mixins.degradational import Degradational
@@ -11,12 +10,15 @@ from schemas.action import Action
 from schemas.agent import StepResponse
 from schemas.geometry import GeometryConfig
 from schemas.params import ParamsConfig
+from utils.state import map_state_2_state_idx
 
 
 class RationalQleaningAgent(Agent):
 
-    def __init__(self, state: State, context: Context, politic: Politic, table: Table, gamma: float = 0.99,
-                 alpha: float = 0.1):
+    def __init__(
+            self, state: State, context: Context, politic: Politic, table: Table, gamma: float = 0.99,
+            alpha: float = 0.9
+    ):
         """"""
         super().__init__(state, context, politic, table)
         self.state = state
@@ -31,7 +33,7 @@ class RationalQleaningAgent(Agent):
 
     def step(self) -> StepResponse:
         """"""
-        old_state_idx = self._map_state_2_state_idx(state=self.state, geometry=self._geometry, params=self._params)
+        old_state_idx = map_state_2_state_idx(state=self.state, geometry=self._geometry, params=self._params)
         action_idx = self._politic.make_action(
             table=self._table,
             state_idx=old_state_idx,
@@ -42,8 +44,8 @@ class RationalQleaningAgent(Agent):
 
     def propagate(self, old_state: State, new_state: State, action: Action, reward: float, done: bool = False) -> None:
         """"""
-        old_state_idx = self._map_state_2_state_idx(state=old_state, geometry=self._geometry, params=self._params)
-        new_state_idx = self._map_state_2_state_idx(state=new_state, geometry=self._geometry, params=self._params)
+        old_state_idx = map_state_2_state_idx(state=old_state, geometry=self._geometry, params=self._params)
+        new_state_idx = map_state_2_state_idx(state=new_state, geometry=self._geometry, params=self._params)
 
         action_idx = self.action_list.index(action)
         old_q = self._table.get(old_state_idx, action_idx)
@@ -60,8 +62,12 @@ class RationalQleaningAgent(Agent):
 
     def reset(self) -> None:
         """"""
-        x, y = AgentSpawner.get_spawn_point(self._context.get(StorageKey.GEO.value))
-        state = State(x=x, y=y, b=self._params.agent.battery.max_value, v=0.0)
+        x, y = AgentSpawner.get_spawn_point(
+            self._context.get(StorageKey.GEO.value),
+        )
+        state = State(
+            x=x, y=y, b=self._params.agent.battery.max_value, v=0.0,
+        )
         self.state = state
 
         if isinstance(self._politic, Degradational):

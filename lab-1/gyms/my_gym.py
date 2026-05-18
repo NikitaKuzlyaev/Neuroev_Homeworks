@@ -21,6 +21,7 @@ from schemas.agent import StepResponse
 from schemas.geometry import GeometryConfig
 from schemas.params import ParamsConfig
 from schemas.rules import RulesConfig
+from training_pipeline import collector
 from utils.math_funcs import MathFunctions
 
 
@@ -52,16 +53,17 @@ class MyGym(Gym):
         )
         self.agent.state = new_state
 
-        condition: TerminalCondition = self.check_terminal(state=new_state)
+        condition: TerminalCondition = self.check_terminal(state=new_state, tick=tick)
 
-        reward = get_reward(
-            rules=self._rules, params=self._params, geometry=self._geometry, state=new_state, condition=condition,
-        )
+        if not validate:
+            reward = get_reward(
+                rules=self._rules, params=self._params, geometry=self._geometry, state=new_state, condition=condition,
+            )
 
-        self.agent.propagate(
-            old_state=state, new_state=new_state, action=step.action, reward=reward,
-            done=condition != TerminalCondition.NOTHING,
-        )
+            self.agent.propagate(
+                old_state=state, new_state=new_state, action=step.action, reward=reward,
+                done=condition != TerminalCondition.NOTHING,
+            )
 
         self._wind_manager.update()
 
