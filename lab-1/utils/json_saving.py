@@ -24,6 +24,7 @@ def save_list_to_json(data: List[Any], file_path: str, *, indent: int = 2) -> No
                 ensure_ascii=False,  # сохраняем Unicode как есть
                 indent=indent
             )
+        print(f"Сохранено в {file_path}")
     except (TypeError, ValueError) as e:
         # возникает, если объект не сериализуем
         raise ValueError(f"Ошибка сериализации: {e}") from e
