@@ -48,7 +48,7 @@ class MyGym(Gym):
         step: StepResponse = self.agent.step()
         state: State = self.agent.state
 
-        new_state = self._get_new_agent_state(
+        new_state, hit_t = self._get_new_agent_state(
             step=step, state=state, params=self._params, geometry=self._geometry, wind_manager=self._wind_manager
         )
         self.agent.state = new_state
@@ -92,28 +92,28 @@ class MyGym(Gym):
     def _get_new_agent_state(
             self, step: StepResponse, state: State, params: ParamsConfig, geometry: GeometryConfig,
             wind_manager: WindManager
-    ) -> State:
+    ) -> tuple[State, float]:
         """"""
-        xe, ye = self._get_next_agent_position(state=state, step=step)
+        xe, ye, hit_t = self._get_next_agent_position(state=state, step=step)
 
         b = get_new_b(
             state=state, params=self._params, geometry=self._geometry, wind_manager=self._wind_manager
         )
         state = State(x=xe, y=ye, b=b, v=step.action.speed.value)
         self._update_agent_battery(state=state, geometry=self._geometry, params=self._params)
-        return state
+        return state, hit_t
 
     def _get_next_agent_position(
             self, state: State, step: StepResponse
-    ) -> tuple[float, float]:
+    ) -> tuple[float, float, float]:
         """"""
         xn, yn = get_new_xy(
             state=state, action=step.action, wind_manager=self._wind_manager
         )
-        xe, ye = GeometryFunctions.get_next_position(
+        xe, ye, hit_t = GeometryFunctions.get_next_position(
             x1=state.x, y1=state.y, x2=xn, y2=yn, geometry=self._geometry
         )
-        return xe, ye
+        return xe, ye, hit_t
 
     def _update_agent_battery(
             self, state: State, geometry: GeometryConfig, params: ParamsConfig,
