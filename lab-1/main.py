@@ -13,6 +13,7 @@ from politics.e_greedy import EGreedyPolitic
 from politics.states.state import State
 from politics.table import Table
 from schemas.params import ParamsConfig
+from utils.agents import create_ql_prospect
 
 context = Context()
 context.add_bootstrap(EnvironmentBootstrap())
@@ -53,9 +54,13 @@ agent = RationalQleaningAgent(
     gamma=0.99,
 )
 
+# agent1 = create_ql_greedy(state=state, context=context, table=table)
+agent2 = create_ql_prospect(state=state, context=context, table=table)
+# agent3 = create_risk_sensitive(state=state, context=context, table=table)
+
 gym = MyGym(
     context=context,
-    agent=agent,
+    agent=agent2,
 )
 
 pipeline = Pipeline(app=app, gym=gym)
