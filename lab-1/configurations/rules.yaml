@@ -13,5 +13,5 @@ rules:
     fail: -180.0
     else:
       base: -1.2
-      speed_coef: -0.035
-      I_station_coef: 0.15
+      speed_coef: -0.035 # -0.035
+      I_station_coef: 0.15 # 0.15

@@ -51,8 +51,8 @@ agent:
 
 
   quants:
-    x: 39
-    y: 21
+    x: 15
+    y: 15
     b: 10
     v: 4
 
